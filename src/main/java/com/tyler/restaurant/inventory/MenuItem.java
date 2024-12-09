@@ -1,20 +1,22 @@
 package com.tyler.restaurant.inventory;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 public class MenuItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // Primary key for the MenuItems table
+    @Column(name = "MenuItemID") // Map to the correct column name in the database
+    private Long id;
 
-    private String name;  // Name of the menu item
-    private Double price;  // Price of the menu item
-    private String description;  // Description of the menu item
+    private String name;
+    private Double price;
+    private String description;
+
+    @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Recipe> recipes;
 
     // Getters and Setters
     public Long getId() {
@@ -47,5 +49,13 @@ public class MenuItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
     }
 }

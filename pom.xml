@@ -44,6 +44,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Jakarta Validation API (for @Min and other validation annotations) -->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
         <!-- Spring Boot Starter Test (for testing) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

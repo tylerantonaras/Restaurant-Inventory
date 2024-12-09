@@ -1,47 +1,46 @@
 package com.tyler.restaurant.inventory;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
-@Table(name = "orders") // Explicitly name the table "orders" to avoid conflicts with the SQL reserved keyword "order"
+@Table(name = "orders")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // Primary key for the Order table
+    @Column(name = "OrderID")
+    private Long orderId;
 
-    private LocalDate orderDate;  // Date of the order
-    private Double totalCost;     // Total cost of the order
-    private String status;        // Status of the order (e.g., Pending, Completed)
+    @Column(name = "OrderDate")
+    private Date orderDate;
+
+    @Column(name = "Status")
+    private String status;
+
+    @Column(name = "TotalCost")
+    private BigDecimal totalCost;
 
     @ManyToOne
-    @JoinColumn(name = "supplier_id") // Foreign key referencing the Supplier table
+    @JoinColumn(name = "SupplierID")
     private Supplier supplier;
 
     // Getters and Setters
-    public Long getId() {
-        return id;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
-    public LocalDate getOrderDate() {
+    public Date getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(LocalDate orderDate) {
+    public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
-    }
-
-    public Double getTotalCost() {
-        return totalCost;
-    }
-
-    public void setTotalCost(Double totalCost) {
-        this.totalCost = totalCost;
     }
 
     public String getStatus() {
@@ -50,6 +49,14 @@ public class Order {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
     }
 
     public Supplier getSupplier() {

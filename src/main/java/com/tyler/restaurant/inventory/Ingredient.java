@@ -1,9 +1,7 @@
 package com.tyler.restaurant.inventory;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 public class Ingredient {
@@ -17,6 +15,9 @@ public class Ingredient {
     private String unitOfMeasure;
     private int stockQuantity;
     private int reorderLevel;
+
+    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Recipe> recipes; // Relationship to Recipe
 
     // Getters and Setters
     public Long getId() {
@@ -65,5 +66,13 @@ public class Ingredient {
 
     public void setReorderLevel(int reorderLevel) {
         this.reorderLevel = reorderLevel;
+    }
+
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
     }
 }
