@@ -1,0 +1,68 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS OrderDetails;
+DROP TABLE IF EXISTS Recipes;
+DROP TABLE IF EXISTS MenuItems;
+DROP TABLE IF EXISTS Orders;
+DROP TABLE IF EXISTS Ingredients;
+DROP TABLE IF EXISTS Suppliers;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE Ingredients (
+    IngredientID BIGINT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL UNIQUE,
+    Category VARCHAR(100) NOT NULL,
+    UnitOfMeasure VARCHAR(50) NOT NULL,
+    StockQuantity INT NOT NULL DEFAULT 0 CHECK (StockQuantity >= 0),
+    ReorderLevel INT NOT NULL DEFAULT 0 CHECK (ReorderLevel >= 0)
+);
+
+CREATE TABLE Suppliers (
+    SupplierID BIGINT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL UNIQUE,
+    ContactInfo VARCHAR(255) NOT NULL,
+    Address VARCHAR(255) NOT NULL,
+    Email VARCHAR(100) UNIQUE,
+    Phone VARCHAR(20)
+);
+
+CREATE TABLE Orders (
+    OrderID BIGINT AUTO_INCREMENT PRIMARY KEY,
+    OrderDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    SupplierID BIGINT NOT NULL,
+    TotalCost DECIMAL(10, 2) NOT NULL CHECK (TotalCost >= 0),
+    Status VARCHAR(20) NOT NULL,
+    FOREIGN KEY (SupplierID) REFERENCES Suppliers(SupplierID)
+);
+
+CREATE TABLE MenuItems (
+    MenuItemID BIGINT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL UNIQUE,
+    Price DECIMAL(10,2) NOT NULL CHECK (Price >= 0),
+    Description TEXT
+);
+
+CREATE TABLE Recipes (
+    RecipeID BIGINT AUTO_INCREMENT PRIMARY KEY,
+    MenuItemID BIGINT NOT NULL,
+    IngredientID BIGINT NOT NULL,
+    Quantity DECIMAL(10,3) NOT NULL CHECK (Quantity > 0),
+    FOREIGN KEY (MenuItemID) REFERENCES MenuItems(MenuItemID),
+    FOREIGN KEY (IngredientID) REFERENCES Ingredients(IngredientID),
+    UNIQUE KEY unique_recipe_item (MenuItemID, IngredientID)
+);
+
+CREATE TABLE OrderDetails (
+    OrderDetailID BIGINT NOT NULL AUTO_INCREMENT,
+    OrderID BIGINT NOT NULL,
+    IngredientID BIGINT NOT NULL,
+    Quantity INT NOT NULL,
+    unitPrice DOUBLE NOT NULL,
+    PRIMARY KEY (OrderDetailID),
+    KEY OrderID (OrderID), 
+    KEY IngredientID (IngredientID),
+    CHECK (Quantity > 0),
+    CHECK (unitPrice >= 0)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
