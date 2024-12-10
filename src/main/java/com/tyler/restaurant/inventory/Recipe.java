@@ -2,25 +2,39 @@ package com.tyler.restaurant.inventory;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import java.math.BigDecimal;
 
 @Entity
+@Table(name = "recipes")
 public class Recipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "recipe_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "MenuItemID", nullable = false) // Updated to match the database column
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_item_id", nullable = false)
     private MenuItem menuItem;
 
-    @ManyToOne
-    @JoinColumn(name = "IngredientID", nullable = false) // Updated to match the database column
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ingredient_id", nullable = false)
     private Ingredient ingredient;
 
-    @Column(nullable = false)
-    @Min(0) // Ensures quantity is non-negative
-    private double quantity;
+    @Column(name = "quantity", nullable = false)
+    @Min(0)
+    private BigDecimal quantity;
+
+    // Default constructor
+    public Recipe() {
+    }
+
+    // Constructor with parameters
+    public Recipe(MenuItem menuItem, Ingredient ingredient, BigDecimal quantity) {
+        this.menuItem = menuItem;
+        this.ingredient = ingredient;
+        this.quantity = quantity;
+    }
 
     // Getters and Setters
     public Long getId() {
@@ -47,11 +61,11 @@ public class Recipe {
         this.ingredient = ingredient;
     }
 
-    public double getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
     }
 }

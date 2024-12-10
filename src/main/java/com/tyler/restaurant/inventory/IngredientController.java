@@ -4,44 +4,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/ingredients") // Base URL for this controller
+@RequestMapping("/ingredients")
 public class IngredientController {
 
     @Autowired
     private IngredientRepository ingredientRepository;
 
-    // Retrieve all ingredients
+    // Fetch all ingredients
     @GetMapping
     public List<Ingredient> getAllIngredients() {
         return ingredientRepository.findAll();
     }
 
-    // Retrieve a specific ingredient by ID
-    @GetMapping("/{id}")
-    public Optional<Ingredient> getIngredientById(@PathVariable Long id) {
-        return ingredientRepository.findById(id);
+    // Fetch ingredients by category
+    @GetMapping("/category/{category}")
+    public List<Ingredient> getIngredientsByCategory(@PathVariable String category) {
+        return ingredientRepository.findByCategory(category);
+    }
+
+    // Fetch low stock ingredients
+    @GetMapping("/low-stock")
+    public List<Ingredient> getLowStockIngredients() {
+        return ingredientRepository.findLowStockIngredients();
+    }
+
+    // Search ingredients by name
+    @GetMapping("/search")
+    public List<Ingredient> searchIngredients(@RequestParam String name) {
+        return ingredientRepository.searchByName(name);
     }
 
     // Add a new ingredient
     @PostMapping
     public Ingredient addIngredient(@RequestBody Ingredient ingredient) {
         return ingredientRepository.save(ingredient);
-    }
-
-    // Update an existing ingredient
-    @PutMapping("/{id}")
-    public Ingredient updateIngredient(@PathVariable Long id, @RequestBody Ingredient updatedIngredient) {
-        return ingredientRepository.findById(id).map(ingredient -> {
-            ingredient.setName(updatedIngredient.getName());
-            ingredient.setCategory(updatedIngredient.getCategory());
-            ingredient.setUnitOfMeasure(updatedIngredient.getUnitOfMeasure());
-            ingredient.setStockQuantity(updatedIngredient.getStockQuantity());
-            ingredient.setReorderLevel(updatedIngredient.getReorderLevel());
-            return ingredientRepository.save(ingredient);
-        }).orElseThrow(() -> new RuntimeException("Ingredient not found with id " + id));
     }
 
     // Delete an ingredient by ID

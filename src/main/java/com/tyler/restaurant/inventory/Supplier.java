@@ -1,22 +1,32 @@
 package com.tyler.restaurant.inventory;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "suppliers")  // Changed from "supplier" to be consistent with plural naming
 public class Supplier {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "supplier_id")  // Changed to lowercase with underscores
     private Long id;
 
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "contact_info")
     private String contactInfo;
+
+    @Column(name = "address")
     private String address;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "phone")
     private String phone;
+
+    // Constructors
+    public Supplier() { }
 
     // Getters and Setters
     public Long getId() {
