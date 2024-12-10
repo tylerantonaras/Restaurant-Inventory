@@ -25,19 +25,22 @@ public class OrderDetailsController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createOrderDetails(@RequestBody OrderDetails orderDetails) {
+    public ResponseEntity<?> createOrderDetails(@RequestBody OrderDetailRequest request) {
         try {
             // Fetch the Order
-            Order order = orderRepository.findById(orderDetails.getOrder().getOrderId())
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+            Order order = orderRepository.findById(request.getOrderId())
+                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + request.getOrderId()));
 
             // Fetch the Ingredient
-            Ingredient ingredient = ingredientRepository.findById(orderDetails.getIngredient().getId())
-                .orElseThrow(() -> new RuntimeException("Ingredient not found"));
+            Ingredient ingredient = ingredientRepository.findById(request.getIngredientId())
+                .orElseThrow(() -> new RuntimeException("Ingredient not found with ID: " + request.getIngredientId()));
 
-            // Set the relationships
+            // Create new OrderDetails
+            OrderDetails orderDetails = new OrderDetails();
             orderDetails.setOrder(order);
             orderDetails.setIngredient(ingredient);
+            orderDetails.setQuantity(request.getQuantity());
+            orderDetails.setUnitPrice(request.getUnitPrice());
 
             // Save and return
             OrderDetails saved = orderDetailsRepository.save(orderDetails);
