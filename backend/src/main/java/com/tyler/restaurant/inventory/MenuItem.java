@@ -23,6 +23,9 @@ public class MenuItem {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "category", nullable = true, length = 255)
+    private String category;
+
     @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Recipe> recipes = new ArrayList<>();
 
@@ -68,6 +71,14 @@ public class MenuItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public List<Recipe> getRecipes() {

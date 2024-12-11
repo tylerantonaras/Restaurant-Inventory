@@ -3,11 +3,11 @@ package com.tyler.restaurant.inventory;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "suppliers")  // Changed from "supplier" to be consistent with plural naming
+@Table(name = "suppliers")
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "supplier_id")  // Changed to lowercase with underscores
+    @Column(name = "supplier_id")
     private Long id;
 
     @Column(name = "name", nullable = false)

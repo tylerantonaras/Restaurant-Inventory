@@ -1,33 +1,93 @@
 .sidebar {
-    width: 200px;
+    width: 250px;
     height: 100vh;
-    background-color: #343a40;
-    color: white;
+    background: #8B3A3A;
     position: fixed;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    left: 0;
+    top: 0;
+    padding: 20px 0;
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 20px 0;
-    width: 100%;
+.logo-container {
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.sidebar ul li {
-    margin: 10px 0;
-}
-
-.sidebar ul li a {
+.site-title {
     color: white;
     text-decoration: none;
-    padding: 10px;
-    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+}
+
+.site-title:hover {
+    color: #3498db;
+}
+
+.nav-menu {
+    padding: 0 15px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    color: #ecf0f1;
+    text-decoration: none;
+    border-radius: 10px;
+    margin: 8px 15px;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.nav-item.active {
+    background: #A84448;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.nav-icon {
+    font-size: 1.2em;
+    margin-right: 15px;
+    width: 24px;
     text-align: center;
 }
 
-.sidebar ul li a:hover {
-    background-color: #495057;
+.nav-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Hover effect for non-active items */
+.nav-item:not(.active):hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #3498db;
+}
+
+/* Animation for active state */
+.nav-item.active {
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-10px);
+        opacity: 0.5;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }

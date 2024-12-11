@@ -28,9 +28,21 @@ public class MenuController {
                 .orElseThrow(() -> new RuntimeException("MenuItem not found"));
     }
 
-    // Optional: delete endpoint
+    // Delete endpoint
     @DeleteMapping("/{id}")
     public void deleteMenuItem(@PathVariable Long id) {
         menuItemRepository.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public MenuItem updateMenuItem(@PathVariable Long id, @RequestBody MenuItem menuItem) {
+        MenuItem existingItem = menuItemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("MenuItem not found"));
+        
+        existingItem.setName(menuItem.getName());
+        existingItem.setDescription(menuItem.getDescription());
+        existingItem.setPrice(menuItem.getPrice());
+        
+        return menuItemRepository.save(existingItem);
     }
 }

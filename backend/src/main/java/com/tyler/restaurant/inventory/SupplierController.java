@@ -1,52 +1,99 @@
 package com.tyler.restaurant.inventory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/suppliers") // Base path for supplier endpoints
+@RequestMapping("/suppliers")
 public class SupplierController {
 
     @Autowired
     private SupplierRepository supplierRepository;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
     // Get all suppliers
     @GetMapping
-    public List<Supplier> getAllSuppliers() {
-        return supplierRepository.findAll();
+    public ResponseEntity<List<Supplier>> getAllSuppliers() {
+        return ResponseEntity.ok(supplierRepository.findAll());
     }
 
-    // Get a supplier by ID
+    // Get supplier by ID
     @GetMapping("/{id}")
-    public Supplier getSupplierById(@PathVariable Long id) {
+    public ResponseEntity<Supplier> getSupplierById(@PathVariable Long id) {
         return supplierRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Supplier not found with id " + id));
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // Add a new supplier
+    // Create new supplier
     @PostMapping
-    public Supplier addSupplier(@RequestBody Supplier supplier) {
-        return supplierRepository.save(supplier);
+    public ResponseEntity<Supplier> createSupplier(@RequestBody Supplier supplier) {
+        try {
+            Supplier savedSupplier = supplierRepository.save(supplier);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedSupplier);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    // Update an existing supplier
+    // Update supplier
     @PutMapping("/{id}")
-    public Supplier updateSupplier(@PathVariable Long id, @RequestBody Supplier updatedSupplier) {
-        return supplierRepository.findById(id).map(supplier -> {
-            supplier.setName(updatedSupplier.getName());
-            supplier.setContactInfo(updatedSupplier.getContactInfo());
-            supplier.setAddress(updatedSupplier.getAddress());
-            supplier.setEmail(updatedSupplier.getEmail());
-            supplier.setPhone(updatedSupplier.getPhone());
-            return supplierRepository.save(supplier);
-        }).orElseThrow(() -> new RuntimeException("Supplier not found with id " + id));
+    public ResponseEntity<Supplier> updateSupplier(@PathVariable Long id, @RequestBody Supplier supplier) {
+        try {
+            return supplierRepository.findById(id)
+                    .map(existingSupplier -> {
+                        existingSupplier.setName(supplier.getName());
+                        existingSupplier.setContactInfo(supplier.getContactInfo());
+                        existingSupplier.setAddress(supplier.getAddress());
+                        existingSupplier.setEmail(supplier.getEmail());
+                        existingSupplier.setPhone(supplier.getPhone());
+                        
+                        Supplier updatedSupplier = supplierRepository.save(existingSupplier);
+                        return ResponseEntity.ok(updatedSupplier);
+                    })
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
-    // Delete a supplier by ID
+    // Delete supplier
     @DeleteMapping("/{id}")
-    public void deleteSupplier(@PathVariable Long id) {
-        supplierRepository.deleteById(id);
+    public ResponseEntity<Map<String, String>> deleteSupplier(@PathVariable Long id) {
+        try {
+            // First, update any orders with this supplier to set supplier to null
+            List<Order> orders = orderRepository.findBySupplier_Id(id);
+            for (Order order : orders) {
+                order.setSupplier(null);
+                orderRepository.save(order);
+            }
+            
+            // Then delete the supplier
+            supplierRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    // Search suppliers by name
+    @GetMapping("/search")
+    public ResponseEntity<List<Supplier>> searchSuppliers(@RequestParam String name) {
+        try {
+            List<Supplier> suppliers = supplierRepository.findByNameContainingIgnoreCase(name);
+            return ResponseEntity.ok(suppliers);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

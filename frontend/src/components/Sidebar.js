@@ -1,32 +1,38 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import "./Sidebar.css";
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import './Sidebar.css';
 
 function Sidebar() {
+    const location = useLocation();
+
     return (
         <div className="sidebar">
-            <Link to="/" className="logo">
-                <img
-                    src="/logo.png" // Replace with your logo path if applicable
-                    alt="Logo"
-                    style={{ width: "100px", margin: "20px auto", display: "block" }}
-                />
-            </Link>
-            <nav>
-                <ul>
-                    <li>
-                        <Link to="/ingredients">Ingredients</Link>
-                    </li>
-                    <li>
-                        <Link to="/menu-items">Menu Items</Link>
-                    </li>
-                    <li>
-                        <Link to="/orders">Orders</Link>
-                    </li>
-                    <li>
-                        <Link to="/suppliers">Suppliers</Link>
-                    </li>
-                </ul>
+            <div className="logo-container">
+                <Link to="/" className="site-title">
+                    Restaurant Manager
+                </Link>
+            </div>
+            
+            <nav className="nav-menu">
+                <Link to="/" className={`nav-item ${location.pathname === '/' ? 'active' : ''}`}>
+                    <span className="nav-text">Home</span>
+                </Link>
+                
+                <Link to="/ingredients" className={`nav-item ${location.pathname === '/ingredients' ? 'active' : ''}`}>
+                    <span className="nav-text">Ingredients</span>
+                </Link>
+                
+                <Link to="/menu-items" className={`nav-item ${location.pathname === '/menu-items' ? 'active' : ''}`}>
+                    <span className="nav-text">Menu Items</span>
+                </Link>
+                
+                <Link to="/orders" className={`nav-item ${location.pathname === '/orders' ? 'active' : ''}`}>
+                    <span className="nav-text">Orders</span>
+                </Link>
+                
+                <Link to="/suppliers" className={`nav-item ${location.pathname === '/suppliers' ? 'active' : ''}`}>
+                    <span className="nav-text">Suppliers</span>
+                </Link>
             </nav>
         </div>
     );

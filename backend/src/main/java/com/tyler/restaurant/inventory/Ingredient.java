@@ -27,6 +27,9 @@ public class Ingredient {
     @Column(name = "reorder_level")
     private int reorderLevel;
 
+    @Column(name = "price_per_unit", nullable = false)
+    private Double pricePerUnit = 0.0;
+
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Recipe> recipes = new ArrayList<>();
 
@@ -41,6 +44,7 @@ public class Ingredient {
         this.unitOfMeasure = unitOfMeasure;
         this.stockQuantity = stockQuantity;
         this.reorderLevel = reorderLevel;
+        this.pricePerUnit = 0.0;
     }
 
     // Getters and Setters
@@ -98,6 +102,14 @@ public class Ingredient {
 
     public void setRecipes(List<Recipe> recipes) {
         this.recipes = recipes;
+    }
+
+    public Double getPricePerUnit() {
+        return pricePerUnit;
+    }
+
+    public void setPricePerUnit(Double pricePerUnit) {
+        this.pricePerUnit = pricePerUnit;
     }
 
     // Helper method to add a recipe

@@ -1,7 +1,8 @@
 {
   "name": "rip-frontend",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "description": "Frontend for Restaurant Inventory Management System",
   "main": "index.js",
   "scripts": {
     "start": "react-scripts start",
@@ -10,7 +11,7 @@
     "eject": "react-scripts eject"
   },
   "keywords": [],
-  "author": "",
+  "author": "Tyler Antonaras",
   "license": "ISC",
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",

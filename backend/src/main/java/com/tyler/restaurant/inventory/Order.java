@@ -23,8 +23,11 @@ public class Order {
     private BigDecimal totalCost;
 
     @ManyToOne
-    @JoinColumn(name = "SupplierID")
+    @JoinColumn(name = "supplier_id", nullable = true)
     private Supplier supplier;
+
+    @Column(name = "TotalAmount")
+    private Double totalAmount;
 
     // Getters and Setters
     public Long getOrderId() {
@@ -65,5 +68,13 @@ public class Order {
 
     public void setSupplier(Supplier supplier) {
         this.supplier = supplier;
+    }
+
+    public Double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
     }
 }

@@ -1,68 +1,72 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS OrderDetails;
-DROP TABLE IF EXISTS Recipes;
-DROP TABLE IF EXISTS MenuItems;
-DROP TABLE IF EXISTS Orders;
-DROP TABLE IF EXISTS Ingredients;
-DROP TABLE IF EXISTS Suppliers;
+DROP TABLE IF EXISTS recipes;
+DROP TABLE IF EXISTS order_details;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS menu_items;
+DROP TABLE IF EXISTS ingredients;
+DROP TABLE IF EXISTS suppliers;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-CREATE TABLE Ingredients (
-    IngredientID BIGINT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL UNIQUE,
-    Category VARCHAR(100) NOT NULL,
-    UnitOfMeasure VARCHAR(50) NOT NULL,
-    StockQuantity INT NOT NULL DEFAULT 0 CHECK (StockQuantity >= 0),
-    ReorderLevel INT NOT NULL DEFAULT 0 CHECK (ReorderLevel >= 0)
-);
+CREATE TABLE suppliers (
+    supplier_id BIGINT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    contact_info VARCHAR(255),
+    address VARCHAR(255),
+    email VARCHAR(255),
+    phone VARCHAR(255),
+    PRIMARY KEY (supplier_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE Suppliers (
-    SupplierID BIGINT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL UNIQUE,
-    ContactInfo VARCHAR(255) NOT NULL,
-    Address VARCHAR(255) NOT NULL,
-    Email VARCHAR(100) UNIQUE,
-    Phone VARCHAR(20)
-);
+CREATE TABLE ingredients (
+    ingredient_id BIGINT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    category VARCHAR(255),
+    unit_of_measure VARCHAR(255),
+    stock_quantity INT,
+    reorder_level INT,
+    price_per_unit DOUBLE NOT NULL DEFAULT 0,
+    PRIMARY KEY (ingredient_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE Orders (
-    OrderID BIGINT AUTO_INCREMENT PRIMARY KEY,
-    OrderDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    SupplierID BIGINT NOT NULL,
-    TotalCost DECIMAL(10, 2) NOT NULL CHECK (TotalCost >= 0),
-    Status VARCHAR(20) NOT NULL,
-    FOREIGN KEY (SupplierID) REFERENCES Suppliers(SupplierID)
-);
+CREATE TABLE menu_items (
+    menu_item_id BIGINT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    description VARCHAR(255),
+    price DECIMAL(38,2) NOT NULL,
+    category VARCHAR(255),
+    PRIMARY KEY (menu_item_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE MenuItems (
-    MenuItemID BIGINT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(100) NOT NULL UNIQUE,
-    Price DECIMAL(10,2) NOT NULL CHECK (Price >= 0),
-    Description TEXT
-);
+CREATE TABLE orders (
+    order_id BIGINT NOT NULL AUTO_INCREMENT,
+    order_date DATETIME(6),
+    status VARCHAR(255),
+    total_cost DECIMAL(38,2),
+    supplier_id BIGINT,
+    PRIMARY KEY (order_id),
+    CONSTRAINT FK_supplier FOREIGN KEY (supplier_id) REFERENCES suppliers (supplier_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE Recipes (
-    RecipeID BIGINT AUTO_INCREMENT PRIMARY KEY,
-    MenuItemID BIGINT NOT NULL,
-    IngredientID BIGINT NOT NULL,
-    Quantity DECIMAL(10,3) NOT NULL CHECK (Quantity > 0),
-    FOREIGN KEY (MenuItemID) REFERENCES MenuItems(MenuItemID),
-    FOREIGN KEY (IngredientID) REFERENCES Ingredients(IngredientID),
-    UNIQUE KEY unique_recipe_item (MenuItemID, IngredientID)
-);
+CREATE TABLE order_details (
+    order_detail_id BIGINT NOT NULL AUTO_INCREMENT,
+    order_id BIGINT NOT NULL,
+    ingredient_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(38,2) NOT NULL,
+    PRIMARY KEY (order_detail_id),
+    CONSTRAINT FK_order FOREIGN KEY (order_id) REFERENCES orders (order_id),
+    CONSTRAINT FK_ingredient FOREIGN KEY (ingredient_id) REFERENCES ingredients (ingredient_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE OrderDetails (
-    OrderDetailID BIGINT NOT NULL AUTO_INCREMENT,
-    OrderID BIGINT NOT NULL,
-    IngredientID BIGINT NOT NULL,
-    Quantity INT NOT NULL,
-    unitPrice DOUBLE NOT NULL,
-    PRIMARY KEY (OrderDetailID),
-    KEY OrderID (OrderID), 
-    KEY IngredientID (IngredientID),
-    CHECK (Quantity > 0),
-    CHECK (unitPrice >= 0)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE recipes (
+    recipe_id BIGINT NOT NULL AUTO_INCREMENT,
+    menu_item_id BIGINT NOT NULL,
+    ingredient_id BIGINT NOT NULL,
+    quantity DECIMAL(38,2) NOT NULL,
+    PRIMARY KEY (recipe_id),
+    CONSTRAINT FK_menu_item FOREIGN KEY (menu_item_id) REFERENCES menu_items (menu_item_id),
+    CONSTRAINT FK_recipe_ingredient FOREIGN KEY (ingredient_id) REFERENCES ingredients (ingredient_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
